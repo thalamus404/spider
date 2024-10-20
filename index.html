@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spider-Diagramm Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .left, .right {
+            width: 25%;
+            padding: 20px;
+        }
+        .middle {
+            width: 50%;
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        canvas {
+            margin-top: 20px;
+            max-width: 100%;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="left">
+        <h3>Automatisierungsgrad</h3>
+        <ul>
+            <li>Stufe 0: Keine Automatisierung</li>
+            <li>Stufe 1: Assistierende Automatisierung</li>
+            <li>Stufe 3: Bedingte Automatisierung</li>
+            <li>Stufe 4: Hohe Automatisierung</li>
+            <li>Stufe 5: Vollständige Automatisierung</li>
+        </ul>
+        <h3>Kreativität</h3>
+        <ul>
+            <li>Stufe 1: Reproduktion</li>
+            <li>Stufe 2: Anpassung</li>
+            <li>Stufe 3: Kombination</li>
+            <li>Stufe 4: Innovation</li>
+        </ul>
+    </div>
+    
+    <div class="middle">
+        <div class="section">
+            <label for="taskName">Aufgabename:</label>
+            <input type="text" id="taskName" placeholder="Aufgabename" />
+        </div>
+
+        <div class="section">
+            <label for="automation">Automatisierungsgrad:</label>
+            <input type="number" id="automation" min="0" max="5" placeholder="0-5" inputmode="numeric" />
+        </div>
+
+        <div class="section">
+            <label for="creativity">Kreativität:</label>
+            <input type="number" id="creativity" min="1" max="4" placeholder="1-4" inputmode="numeric" />
+        </div>
+
+        <div class="section">
+            <label for="decision">Entscheidungsautonomie:</label>
+            <input type="number" id="decision" min="1" max="4" placeholder="1-4" inputmode="numeric" />
+        </div>
+
+        <div class="section">
+            <label for="context">Kontextabhängigkeit:</label>
+            <input type="number" id="context" min="1" max="4" placeholder="1-4" inputmode="numeric" />
+        </div>
+
+        <button onclick="generateSpiderChart()">Diagramm generieren</button>
+        <button onclick="downloadChart()">Diagramm herunterladen</button>
+        <canvas id="spiderChart"></canvas>
+    </div>
+    
+    <div class="right">
+        <h3>Entscheidungsautonomie</h3>
+        <ul>
+            <li>Stufe 1: Nutzer trifft alle Entscheidungen</li>
+            <li>Stufe 2: Nutzer mit KI-Empfehlungen</li>
+            <li>Stufe 3: KI trifft Entscheidungen, Nutzer überwacht</li>
+            <li>Stufe 4: KI trifft Entscheidungen autonom</li>
+        </ul>
+        <h3>Kontextabhängigkeit</h3>
+        <ul>
+            <li>Stufe 1: Kein Kontextbezug</li>
+            <li>Stufe 2: Grundlegender Kontextbezug</li>
+            <li>Stufe 3: Umfassender Kontextbezug</li>
+            <li>Stufe 4: Tiefgreifendes Verständnis</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    let spiderChart; // Variable für das Spider-Diagramm
+
+    function generateSpiderChart() {
+        const taskName = document.getElementById('taskName').value || 'Spider-Diagramm';
+        const automation = document.getElementById('automation').value;
+        const creativity = document.getElementById('creativity').value;
+        const decision = document.getElementById('decision').value;
+        const context = document.getElementById('context').value;
+
+        const data = {
+            labels: ['Automatisierungsgrad', 'Kreativität', 'Entscheidungsautonomie', 'Kontextabhängigkeit'],
+            datasets: [{
+                label: taskName,
+                data: [automation, creativity, decision, context],
+                fill: true,
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(0, 123, 255, 1)'
+            }]
+        };
+
+        const config = {
+            type: 'radar',
+            data: data,
+            options: {
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 5,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        };
+
+        const ctx = document.getElementById('spiderChart').getContext('2d');
+        
+        // Falls bereits ein Diagramm existiert, wird es zuerst zerstört
+        if (spiderChart) {
+            spiderChart.destroy();
+        }
+        
+        spiderChart = new Chart(ctx, config);
+    }
+
+    function downloadChart() {
+        const link = document.createElement('a');
+        link.download = `${document.getElementById('taskName').value || 'Spider-Diagramm'}.png`;
+        link.href = document.getElementById('spiderChart').toDataURL('image/png');
+        link.click();
+    }
+</script>
+
+</body>
+</html>
